@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">Take</string>
+    <string name="text_search">Search Github users</string>
+
+    <string name="text_data_is_not_found">Data is not found</string>
+    <string name="text_404">404</string>
+
+    <string name="text_api_rate_is_limit">We try our best to serve the data, we will try again after 60 seconds</string>
+    <string name="text_403">60</string>
+    <string name="text_please_waiting">Please wait, our finder is on working</string>
+    <string name="text_searching">Searching</string>
 </resources>

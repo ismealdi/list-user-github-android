@@ -1,0 +1,38 @@
+<resources>
+
+    <dimen name="text_navbar_title">18sp</dimen>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_horizontal_margin_small">8dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin_big">32dp</dimen>
+    <dimen name="activity_vertical_margin_extra">42dp</dimen>
+
+    <dimen name="text_title_extra">28sp</dimen>
+    <dimen name="text_title_big">24sp</dimen>
+    <dimen name="text_title_medium">18sp</dimen>
+    <dimen name="text_title_small">12sp</dimen>
+
+    <dimen name="component_extrasmall">2dp</dimen>
+    <dimen name="component_small">4dp</dimen>
+    <dimen name="component_medium">8dp</dimen>
+    <dimen name="component_big">12dp</dimen>
+    <dimen name="component_extra">16dp</dimen>
+    <dimen name="component_extrabig">20dp</dimen>
+
+    <dimen name="text_extrasmall">12sp</dimen>
+    <dimen name="text_small">14sp</dimen>
+    <dimen name="text_medium">16sp</dimen>
+    <dimen name="text_big">18sp</dimen>
+    <dimen name="text_extra">32sp</dimen>
+
+    <dimen name="button_radius_extrasmall">4dp</dimen>
+    <dimen name="button_radius_small">8dp</dimen>
+    <dimen name="button_radius_medium">16dp</dimen>
+    <dimen name="button_radius_big">32dp</dimen>
+
+    <dimen name="button_height_normal">55dp</dimen>
+    <dimen name="button_height_medium">35dp</dimen>
+
+    <dimen name="component_label">15dp</dimen>
+    <dimen name="divider_small">.5dp</dimen>
+</resources>
