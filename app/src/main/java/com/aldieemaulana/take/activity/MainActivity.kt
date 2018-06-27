@@ -166,7 +166,11 @@ class MainActivity : BaseActivity() {
 
     private val handlerSearch = Runnable {
         if (System.currentTimeMillis() > lastText + delay - 500 && textSearch.text.toString().isNotEmpty()) {
-            doSearch(textSearch.text.toString(), currentPage, perPage)
+            if(adapter != null && adapter!!.itemCount > 0) {
+                adapter?.filter?.filter(textSearch.text.toString())
+            }else{
+                doSearch(textSearch.text.toString(), currentPage, perPage)
+            }
         }
     }
 
@@ -178,18 +182,16 @@ class MainActivity : BaseActivity() {
                 if (s.isEmpty())
                     doClearList()
                 else{
-                   if(adapter != null) {
-                       adapter?.filter?.filter(textSearch.text.toString())
-                   }
+                    if(adapter != null && adapter!!.itemCount > 0) {
+                        adapter?.filter?.filter(textSearch.text.toString())
+                    }
                 }
             }
 
             override fun afterTextChanged(s: Editable) {
                 if (s.isNotEmpty()) {
-                    if(adapter == null || adapter?.itemCount == 0) {
-                        lastText = System.currentTimeMillis()
-                        handler.postDelayed(handlerSearch, delay)
-                    }
+                    lastText = System.currentTimeMillis()
+                    handler.postDelayed(handlerSearch, delay)
                 } else {
                     doClearList()
                 }

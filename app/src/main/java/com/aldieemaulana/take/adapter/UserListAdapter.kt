@@ -23,15 +23,10 @@ import android.text.method.TextKeyListener.clear
  */
 
 
-class UserListAdapter : RecyclerView.Adapter<UserListAdapter.ViewHolder>, Filterable {
+class UserListAdapter(userList: MutableList<User>) : RecyclerView.Adapter<UserListAdapter.ViewHolder>(), Filterable {
 
-    private val userList: MutableList<User>
-    private var userListFiltered: MutableList<User>
-
-    constructor(userList: MutableList<User>) : super() {
-        this.userList = userList
-        this.userListFiltered = userList
-    }
+    private var userList: MutableList<User> = arrayListOf()
+    private var userListFiltered: MutableList<User> = userList
 
     private fun loadIntet() {
 
@@ -50,7 +45,7 @@ class UserListAdapter : RecyclerView.Adapter<UserListAdapter.ViewHolder>, Filter
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val user = userList[position]
+        val user = userListFiltered[position]
 
         Picasso.get().load(user.avatarUrl)
                 .resize(40, 40).centerCrop()
@@ -68,16 +63,19 @@ class UserListAdapter : RecyclerView.Adapter<UserListAdapter.ViewHolder>, Filter
 
     fun clear() {
         userList.clear()
+        userListFiltered.clear()
         notifyDataSetChanged()
     }
 
     fun addAll(list: List<User>) {
         userList.addAll(list)
+        userListFiltered.addAll(list)
         notifyDataSetChanged()
     }
 
     fun add(user: User) {
         userList.add(user)
+        userListFiltered.add(user)
         notifyDataSetChanged()
     }
 
