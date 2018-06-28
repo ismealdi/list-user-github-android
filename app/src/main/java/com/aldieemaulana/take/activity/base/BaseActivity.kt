@@ -1,5 +1,6 @@
 package com.aldieemaulana.take.activity.base
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Rect
 import android.support.v7.app.AppCompatActivity
@@ -12,6 +13,7 @@ import io.reactivex.disposables.Disposable
  * Created by Al on 26/06/18 for Cermati
  */
 
+@SuppressLint("Registered")
 open class BaseActivity : AppCompatActivity() {
 
     open val context : Context = this

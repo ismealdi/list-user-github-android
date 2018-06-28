@@ -19,6 +19,7 @@ import com.aldieemaulana.take.view.AmEditText
 import android.os.Handler
 import android.view.View
 
+
 /**
  * Created by Al on 26/06/18 for Cermati
  */
@@ -27,15 +28,15 @@ class MainActivity : BaseActivity() {
 
     private val user by lazy { Api.create() }
     private val delay: Long = 1500
-    private val perPage : Int = 10
+    private val perPage : Int = 100
     private var adapter: UserListAdapter? = null
     private var totalPage : Int = 0
     private var currentPage : Int = 1
     private var nextPage : Boolean = false
     private var isSearch : Boolean = false
     private var queryCurrent : String = ""
-    private var lastText: Long = 0
-    private var handler = Handler()
+    private var querySearched : Int = 0
+    private var lastTextChanged: Long = 0
 
     private var userLinearLayout = LinearLayoutManager(context, LinearLayout.VERTICAL, false)
 
@@ -56,6 +57,8 @@ class MainActivity : BaseActivity() {
                 if(nextPage) {
                     currentPage++
                     doSearch(queryCurrent, currentPage, perPage)
+                }else{
+
                 }
             }
 
@@ -68,7 +71,7 @@ class MainActivity : BaseActivity() {
         errorLayout.visibility = View.GONE
 
         if(adapter == null) {
-            adapter = UserListAdapter(data.toMutableList())
+            adapter = UserListAdapter(data.toMutableList(), data.toMutableList())
             recyclerView.adapter = adapter
         }else{
             if(queryCurrent != q || (data.count() == 1 && currentPage == 1))
@@ -78,10 +81,12 @@ class MainActivity : BaseActivity() {
             adapter!!.notifyItemRangeChanged(0, adapter!!.itemCount)
         }
 
+        AlLog.e("count on query trigger ${adapter?.itemCount}")
     }
 
     private fun doClearList() {
         if(adapter != null) {
+            errorLayout.visibility = View.GONE
             queryCurrent = ""
             totalPage = 0
             currentPage = 1
@@ -92,47 +97,98 @@ class MainActivity : BaseActivity() {
 
     private fun doSearch(q: String, p: Int, pP: Int) {
         textSearch.isEnabled = true
-        if (queryCurrent != q)
-            doClearList()
-
         if(!isSearch) {
             loading(true)
             AlLog.e("Query ${q}, ${p}")
             disposable = user.search(q, p, pP)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                            { result ->
-                                loading(false)
-                                val count = result.items.count()
-                                if(count > 0){
-                                    totalPage += count
-                                    doInitList(result.items, q)
-                                    nextPage = (result.totalCount!! > totalPage && result.totalCount > perPage)
-                                }else{
-                                    doClearList()
-                                    doInitNotFound(getString(R.string.text_404), getString(R.string.text_data_is_not_found))
-                                }
-                            },
-                            { error ->
-                                loading(false)
-                                AlLog.e("${error.message}")
-                                doClearList()
-                                doInitNotFound(getString(R.string.text_403), getString(R.string.text_api_rate_is_limit))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    { result ->
+                        loading(false)
+                        val count = result.items.count()
+                        if(count > 0){
+                            totalPage += count
+                            doInitList(result.items, q)
+                            nextPage = (result.totalCount!! > totalPage && result.totalCount > perPage)
 
-                                Handler().postDelayed(
-                                        { doSearch(textSearch.text.toString(), currentPage, perPage) },
-                                        60000)
+                        }else{
+                            doClearList()
+                            doInitNotFound(getString(R.string.text_404), getString(R.string.text_data_is_not_found))
+                        }
+                    },
+                    { error ->
+                        loading(false)
+                        AlLog.e("${error.message}")
+                        doClearList()
+                        doInitNotFound(getString(R.string.text_403), getString(R.string.text_api_rate_is_limit))
 
-                                doStartTick()
+                        Handler().postDelayed(
+                                { doSearch(textSearch.text.toString(), currentPage, perPage) },
+                                60000)
 
-                            }
-                    )
+                        doStartTick()
+                    }
+                )
 
             queryCurrent = q
         }
 
 
+    }
+
+    private val handlerSearch = Runnable {
+        if (System.currentTimeMillis() > lastTextChanged + delay - 500 && textSearch.text.toString().isNotEmpty()) {
+            doClearList()
+            doSearch(textSearch.text.toString(), currentPage, perPage)
+        }
+    }
+
+    private fun AmEditText.onChange() {
+        this.addTextChangedListener(object: TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                AlLog.e("count on text changed ${adapter?.itemCount}")
+
+                if (s.isEmpty())
+                    doClearList()
+            }
+
+            override fun afterTextChanged(s: Editable) {
+                if (s.isNotEmpty()) {
+                    if(querySearched > textSearch.text.toString().length)
+                        doSearchTick(handler, false)
+                    else{
+                        if(adapter != null && totalPage > 1) {
+                            if(!nextPage)
+                                adapter?.filter?.filter(textSearch.text.toString())
+                            else
+                                doSearchTick(handler, true)
+                        }else{
+                            doSearchTick(handler, false)
+                        }
+                    }
+                } else {
+                    doClearList()
+                }
+
+                querySearched = textSearch.text.toString().length
+            }
+        })
+    }
+
+    private fun doSearchTick(handler: Handler, filtered: Boolean) {
+        if(adapter != null && adapter?.itemCount!! > 0 && filtered) {
+            adapter?.filter?.filter(textSearch.text.toString())
+            if(adapter?.itemCount!! == 0) {
+                doClearList()
+                doInitNotFound(getString(R.string.text_404), getString(R.string.text_data_is_not_found))
+            }
+        }else{
+            lastTextChanged = System.currentTimeMillis()
+            handler.postDelayed(handlerSearch, delay)
+        }
     }
 
     private fun doStartTick() {
@@ -154,8 +210,6 @@ class MainActivity : BaseActivity() {
             loadingLayout.visibility = View.VISIBLE
         else
             loadingLayout.visibility = View.GONE
-
-
     }
 
     private fun doInitNotFound(c: String, m: String) {
@@ -164,39 +218,5 @@ class MainActivity : BaseActivity() {
         textDescription.text = m
     }
 
-    private val handlerSearch = Runnable {
-        if (System.currentTimeMillis() > lastText + delay - 500 && textSearch.text.toString().isNotEmpty()) {
-            if(adapter != null && adapter!!.itemCount > 0) {
-                adapter?.filter?.filter(textSearch.text.toString())
-            }else{
-                doSearch(textSearch.text.toString(), currentPage, perPage)
-            }
-        }
-    }
-
-    private fun AmEditText.onChange() {
-        this.addTextChangedListener(object: TextWatcher {
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (s.isEmpty())
-                    doClearList()
-                else{
-                    if(adapter != null && adapter!!.itemCount > 0) {
-                        adapter?.filter?.filter(textSearch.text.toString())
-                    }
-                }
-            }
-
-            override fun afterTextChanged(s: Editable) {
-                if (s.isNotEmpty()) {
-                    lastText = System.currentTimeMillis()
-                    handler.postDelayed(handlerSearch, delay)
-                } else {
-                    doClearList()
-                }
-            }
-        })
-    }
 
 }

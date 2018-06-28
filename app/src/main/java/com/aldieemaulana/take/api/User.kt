@@ -1,7 +1,6 @@
 package com.aldieemaulana.take.api
 
 import com.aldieemaulana.take.App
-import com.aldieemaulana.take.utils.AmInterceptor
 import io.reactivex.Observable
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -13,9 +12,6 @@ import okhttp3.OkHttpClient
 import android.os.SystemClock
 import okhttp3.Dispatcher
 import okhttp3.Interceptor
-import okhttp3.Interceptor.Chain
-import okhttp3.Response
-import java.io.IOException
 
 
 /**

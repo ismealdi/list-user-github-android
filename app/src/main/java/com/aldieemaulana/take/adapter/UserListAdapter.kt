@@ -23,10 +23,7 @@ import android.text.method.TextKeyListener.clear
  */
 
 
-class UserListAdapter(userList: MutableList<User>) : RecyclerView.Adapter<UserListAdapter.ViewHolder>(), Filterable {
-
-    private var userList: MutableList<User> = arrayListOf()
-    private var userListFiltered: MutableList<User> = userList
+class UserListAdapter(var userList: MutableList<User>, var userListFiltered: MutableList<User>) : RecyclerView.Adapter<UserListAdapter.ViewHolder>(), Filterable {
 
     private fun loadIntet() {
 
