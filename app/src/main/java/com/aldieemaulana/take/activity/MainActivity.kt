@@ -57,8 +57,6 @@ class MainActivity : BaseActivity() {
                 if(nextPage) {
                     currentPage++
                     doSearch(queryCurrent, currentPage, perPage)
-                }else{
-
                 }
             }
 
@@ -108,6 +106,7 @@ class MainActivity : BaseActivity() {
                         loading(false)
                         val count = result.items.count()
                         if(count > 0){
+                            AlLog.e("count on query changed ${result.totalCount}")
                             totalPage += count
                             doInitList(result.items, q)
                             nextPage = (result.totalCount!! > totalPage && result.totalCount > perPage)
@@ -149,8 +148,6 @@ class MainActivity : BaseActivity() {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                AlLog.e("count on text changed ${adapter?.itemCount}")
-
                 if (s.isEmpty())
                     doClearList()
             }
