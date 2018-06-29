@@ -19,7 +19,6 @@ import com.aldieemaulana.take.view.AmEditText
 import android.os.Handler
 import android.view.View
 
-
 /**
  * Created by Al on 26/06/18 for Cermati
  */
