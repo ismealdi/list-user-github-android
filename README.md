@@ -15,13 +15,13 @@
 Simple and clean design for your app build from scratch with Photoshop
 
 
-![](https://imgur.com/a/dbtFJdr)
+![](https://kek.gg/i/4RZPbP.png)
 
 # In action
 See how it works 
 
 
-![](https://imgur.com/a/CE2h2Tl)
+![](https://kek.gg/i/MR7Qn.gif)
 
 
 
