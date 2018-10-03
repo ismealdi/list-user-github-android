@@ -26,7 +26,7 @@ See how it works
 
 
 ## Contributing
-1. Fork it (<https://github.com/aldieemaulana/Cermati/fork>)
+1. Fork it (<https://github.com/aldieemaulana/list-user-github-android/fork>)
 2. Create your feature branch (`git checkout -b feature/fooBar`)
 3. Commit your changes (`git commit -am 'Add some fooBar'`)
 4. Push to the branch (`git push origin feature/fooBar`)
